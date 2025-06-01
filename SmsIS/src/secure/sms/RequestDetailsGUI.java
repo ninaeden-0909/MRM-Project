@@ -5,38 +5,69 @@
 package secure.sms;
 
 import all_requests.Request;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import responses.ResponseDAOImpl;
+import secure.sms.AdminGUI;
+import secure.sms.ResponseGUI;
+import session.LoggedInUser;
 
 /**
  *
  * @author Lenovo
  */
 public class RequestDetailsGUI extends javax.swing.JDialog {
-
+    private ResponseDAOImpl responseDAOImpl = new ResponseDAOImpl();
+    private int request_id;
+    private AdminGUI adminGUI;
+   
     /**
      * Creates new form RequestDetailsGUI
      */
     public RequestDetailsGUI(java.awt.Frame parent, Request request) {
         super(parent,true);
-        initComponents();
+        this.adminGUI = adminGUI;
         
-    // Fill fields
-    request_idLBL.setText(String.valueOf(request.getId()));
-    user_idLBL.setText(String.valueOf(request.getUser_id()));
-    typeLBL.setText(request.getRequest_type());
-    requestInfoLBL.setText(request.getRequest_info());
-    descriptionTA.setText(request.getDescription());
-    purposeLBL.setText(request.getPurpose());
-    locationLBL.setText(request.getLocation());
-    requestedByLBL.setText(request.getRequested_by());
-    priorityLBL.setText(request.getPriority());
-    dateOfUseLBL.setText(request.getDate_of_use());
-    /*statusLBL.setText(request.getStatus());*/
-
+        if (request == null) {
+        JOptionPane.showMessageDialog(this,
+                "Invalid request data. Cannot display details.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        dispose();
+        return;
     }
+        this.request_id = request.getRequest_id();
+        initComponents();
+        String status = responseDAOImpl.getLatestStatusByRequestId(request.getRequest_id());
+        configureButtons(status);
 
-
-
-    
+        
+        request_idLBL.setText(String.valueOf(request.getRequest_id()));
+        user_idLBL.setText(String.valueOf(request.getUser_id()));
+        typeLBL.setText(request.getRequest_type());
+        requestInfoLBL.setText(request.getRequest_info());
+        descriptionLBL.setText(request.getDescription());
+        locationLBL.setText(request.getLocation());
+        purposeLBL.setText(request.getPurpose());
+        priorityLBL.setText(request.getPriority());
+        requestedByLBL.setText(request.getRequested_by());
+    }
+        private void configureButtons(String status) {
+    if ("Approved".equalsIgnoreCase(status) || "In Progress".equalsIgnoreCase(status)) {
+        approvedBTN.setVisible(false);
+        rejectBTN.setVisible(false);
+        completeBTN.setVisible(true);
+    } else if ("Pending".equalsIgnoreCase(status) || status == null) {
+        approvedBTN.setVisible(true);
+        rejectBTN.setVisible(true);
+        completeBTN.setVisible(false);
+    } else {
+        approvedBTN.setVisible(false);
+        rejectBTN.setVisible(false);
+        completeBTN.setVisible(false);
+    }
+}   
     
 
     /**
@@ -49,7 +80,6 @@ public class RequestDetailsGUI extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -59,25 +89,25 @@ public class RequestDetailsGUI extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         request_idLBL = new javax.swing.JLabel();
         user_idLBL = new javax.swing.JLabel();
         typeLBL = new javax.swing.JLabel();
         requestInfoLBL = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        descriptionTA = new javax.swing.JTextArea();
         purposeLBL = new javax.swing.JLabel();
         locationLBL = new javax.swing.JLabel();
         requestedByLBL = new javax.swing.JLabel();
         priorityLBL = new javax.swing.JLabel();
-        dateOfUseLBL = new javax.swing.JLabel();
-        statusLBL = new javax.swing.JLabel();
+        descriptionLBL = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        approvedBTN = new javax.swing.JButton();
+        rejectBTN = new javax.swing.JButton();
+        completeBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        jLabel1.setText("Request Details....");
+        jPanel1.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jLabel2.setText("Request ID:");
 
@@ -97,152 +127,227 @@ public class RequestDetailsGUI extends javax.swing.JDialog {
 
         jLabel10.setText("Priority:");
 
-        jLabel11.setText("Date of use:");
+        request_idLBL.setText("Request_ID");
 
-        jLabel12.setText("Status:");
+        user_idLBL.setText("User_ID");
 
-        request_idLBL.setText("1");
+        typeLBL.setText("Type");
 
-        user_idLBL.setText("jLabel13");
+        requestInfoLBL.setText("Request_info");
 
-        typeLBL.setText("jLabel13");
+        purposeLBL.setText("Purpose");
 
-        requestInfoLBL.setText("jLabel13");
+        locationLBL.setText("Location");
 
-        descriptionTA.setColumns(20);
-        descriptionTA.setRows(5);
-        jScrollPane1.setViewportView(descriptionTA);
+        requestedByLBL.setText("Requested by");
 
-        purposeLBL.setText("jLabel13");
+        priorityLBL.setText("Priority");
 
-        locationLBL.setText("jLabel13");
+        descriptionLBL.setText("Description");
 
-        requestedByLBL.setText("jLabel13");
+        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 1, 12)); // NOI18N
+        jLabel1.setText("--REQUEST DETAILS -------------------------------");
 
-        priorityLBL.setText("jLabel13");
+        approvedBTN.setText("Approve");
+        approvedBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                approvedBTNActionPerformed(evt);
+            }
+        });
 
-        dateOfUseLBL.setText("jLabel13");
+        rejectBTN.setText("Reject");
+        rejectBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rejectBTNActionPerformed(evt);
+            }
+        });
 
-        statusLBL.setText("jLabel13");
+        completeBTN.setText("Complete");
+        completeBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                completeBTNActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(58, 58, 58)
+                                .addComponent(typeLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(request_idLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(requestInfoLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(user_idLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
-                                .addGap(28, 28, 28)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(request_idLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(user_idLBL, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
-                                    .addComponent(typeLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jLabel12))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(priorityLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(dateOfUseLBL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-                                        .addComponent(requestedByLBL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(locationLBL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(purposeLBL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(statusLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(29, Short.MAX_VALUE))
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(priorityLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(14, 14, 14))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(126, 126, 126)
+                        .addComponent(approvedBTN)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rejectBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(purposeLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(descriptionLBL)
+                            .addComponent(requestInfoLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(locationLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(completeBTN)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel9)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(requestedByLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(request_idLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
                     .addComponent(jLabel3)
-                    .addComponent(user_idLBL))
+                    .addComponent(user_idLBL)
+                    .addComponent(request_idLBL))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(typeLBL))
+                    .addComponent(typeLBL)
+                    .addComponent(jLabel10)
+                    .addComponent(priorityLBL))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(requestInfoLBL)
+                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(requestInfoLBL))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(jLabel6)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel6)
+                    .addComponent(descriptionLBL))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(purposeLBL))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addGap(4, 4, 4)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(locationLBL))
+                    .addComponent(locationLBL)
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(requestedByLBL))
+                .addGap(4, 4, 4)
+                .addComponent(completeBTN)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(priorityLBL))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(dateOfUseLBL))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(statusLBL))
-                .addGap(48, 48, 48))
+                    .addComponent(rejectBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(approvedBTN))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
+    private void approvedBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approvedBTNActionPerformed
+    ResponseGUI responseGUI = new ResponseGUI((java.awt.Frame) this.getParent(), request_id, "Approve");
+    responseGUI.setLocationRelativeTo(this);
+    responseGUI.setVisible(true);
+    }//GEN-LAST:event_approvedBTNActionPerformed
+
+    private void rejectBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectBTNActionPerformed
+    ResponseGUI responseGUI = new ResponseGUI((java.awt.Frame) this.getParent(), request_id, "Reject");
+    responseGUI.setLocationRelativeTo(this); 
+    responseGUI.setVisible(true);
+
+    }//GEN-LAST:event_rejectBTNActionPerformed
+
+    private void completeBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeBTNActionPerformed
+     
+    int request_id = Integer.parseInt(request_idLBL.getText()); // the selected request ID
+
+    String comment = JOptionPane.showInputDialog(
+        RequestDetailsGUI.this,
+        "Enter completion remarks:",
+        "Complete Request",
+        JOptionPane.PLAIN_MESSAGE
+    );
+
+    if (comment != null && !comment.trim().isEmpty()) {
+        ResponseDAOImpl responseDAO = new ResponseDAOImpl();
+        boolean success = responseDAO.updateResponseToCompleted(request_id, comment.trim());
+
+        if (success) {
+            JOptionPane.showMessageDialog(RequestDetailsGUI.this,
+                "Request marked as completed!",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+
+            if (adminGUI != null) {
+                adminGUI.reloadTabs(); // Refresh tabs to move to Record tab
+                dispose(); // Close the dialog
+            }
+        } else {
+            JOptionPane.showMessageDialog(RequestDetailsGUI.this,
+                "Failed to complete the request.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(RequestDetailsGUI.this,
+            "Completion comment is required!",
+            "Warning",
+            JOptionPane.WARNING_MESSAGE);
+    }
+
+
+
+    }//GEN-LAST:event_completeBTNActionPerformed
+ /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -285,12 +390,11 @@ public class RequestDetailsGUI extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel dateOfUseLBL;
-    private javax.swing.JTextArea descriptionTA;
+    private javax.swing.JButton approvedBTN;
+    private javax.swing.JButton completeBTN;
+    private javax.swing.JLabel descriptionLBL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -300,14 +404,13 @@ public class RequestDetailsGUI extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel locationLBL;
     private javax.swing.JLabel priorityLBL;
     private javax.swing.JLabel purposeLBL;
+    private javax.swing.JButton rejectBTN;
     private javax.swing.JLabel requestInfoLBL;
     private javax.swing.JLabel request_idLBL;
     private javax.swing.JLabel requestedByLBL;
-    private javax.swing.JLabel statusLBL;
     private javax.swing.JLabel typeLBL;
     private javax.swing.JLabel user_idLBL;
     // End of variables declaration//GEN-END:variables

@@ -15,12 +15,12 @@ import java.sql.*;
 public class UserDAOImpl implements UserDAO{
     
     public boolean create(User user){
-        String query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+        String query = "INSERT INTO users (username,role, password) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getRole());
+            pstmt.setString(2, user.getRole());
+            pstmt.setString(3, user.getPassword());
             pstmt.executeUpdate();
                         
             return true;
@@ -40,7 +40,7 @@ public class UserDAOImpl implements UserDAO{
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 user = new User(rs.getInt("user_id"), rs.getString("username"), 
-                        rs.getString("password"), rs.getString("role"));
+                        rs.getString("role"), rs.getString("password"));
             } 
             
             return user;
@@ -60,8 +60,9 @@ public class UserDAOImpl implements UserDAO{
             while (rs.next()) {
                 User user = new User(rs.getInt("user_id"), 
                         rs.getString("username"), 
-                        rs.getString("password"), 
-                        rs.getString("role")
+                        rs.getString("role"),
+                        rs.getString("password")
+                        
                 );
                 users.add(user);
             }
@@ -116,7 +117,7 @@ public class UserDAOImpl implements UserDAO{
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 users.add(new User(rs.getInt("user_id"), rs.getString("username"), 
-                        rs.getString("password"), rs.getString("role")));
+                        rs.getString("role"), rs.getString("password")));
             }
             
             return users;

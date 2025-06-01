@@ -9,53 +9,51 @@ package all_requests;
  * @author Lenovo
  */
 public class Request {
-    private int id;
+    private int request_id;
     private int user_id;
-    private String request_type;
     private String request_info;
-    private int quantity;
+    private String request_type;
+    private String quantity;
     private String description;
     private String purpose;
     private String requested_by;
     private String location;
-    private String date_of_use;
     private String priority;
     private String date_created;
 
     // Add constructors, getters, and setters
 
-    public Request(int id, int user_id, String request_type, String request_info, int quantity, String description, String purpose, String requested_by, String location, String date_of_use, String priority, String date_created) {
-        this.id = id;
+    public Request(int request_id, int user_id, String request_info, String request_type, String quantity, String description, String purpose, String requested_by, String location, String priority, String date_created) {
+        this.request_id = request_id;
         this.user_id = user_id;
-        this.request_type = request_type;
         this.request_info = request_info;
+        this.request_type = request_type;
         this.quantity = quantity;
         this.description = description;
         this.purpose = purpose;
         this.requested_by = requested_by;
         this.location = location;
-        this.date_of_use = date_of_use;
         this.priority = priority;
         this.date_created = date_created;
     }
 
-    public int getId() {
-        return id;
+    public int getRequest_id() {
+        return request_id;
     }
 
     public int getUser_id() {
         return user_id;
     }
 
-    public String getRequest_type() {
-        return request_type;
-    }
-
     public String getRequest_info() {
         return request_info;
     }
 
-    public int getQuantity() {
+    public String getRequest_type() {
+        return request_type;
+    }
+
+    public String getQuantity() {
         return quantity;
     }
 
@@ -75,10 +73,6 @@ public class Request {
         return location;
     }
 
-    public String getDate_of_use() {
-        return date_of_use;
-    }
-
     public String getPriority() {
         return priority;
     }
@@ -87,23 +81,23 @@ public class Request {
         return date_created;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRequest_id(int request_id) {
+        this.request_id = request_id;
     }
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 
-    public void setRequest_type(String request_type) {
-        this.request_type = request_type;
-    }
-
     public void setRequest_info(String request_info) {
         this.request_info = request_info;
     }
 
-    public void setQuantity(int quantity) {
+    public void setRequest_type(String request_type) {
+        this.request_type = request_type;
+    }
+
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
@@ -121,10 +115,6 @@ public class Request {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public void setDate_of_use(String date_of_use) {
-        this.date_of_use = date_of_use;
     }
 
     public void setPriority(String priority) {
